@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: product-service
+  description: Spring Cloud Architecture on TAP product-service
+  tags:
+    - sc-architecture
+  annotations:
+    'backstage.io/kubernetes-label-selector': 'app.kubernetes.io/part-of=product-service'
+spec:
+  type: service
+  lifecycle: experimental
+  owner: team-vmware-tanzu-se
+  system: sc-architecture-system
+  dependsOn:
+  - Resource:configserver
+  - Resource:observability

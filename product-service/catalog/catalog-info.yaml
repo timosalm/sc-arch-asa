@@ -1,0 +1,8 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: product-service-component-location
+  description: Component product-service for Spring Cloud Architecture on TAP
+spec:
+  targets:
+    - ./component.yaml

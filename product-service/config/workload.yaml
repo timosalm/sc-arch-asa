@@ -1,0 +1,62 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: product-service
+  annotations:
+    autoscaling.knative.dev/min-scale: "1"
+    autoscaling.knative.dev/max-scale: "3"
+    autoscaling.knative.dev/target: "50"
+  labels:
+    app.kubernetes.io/part-of: product-service
+    apps.tanzu.vmware.com/workload-type: web
+    apps.tanzu.vmware.com/has-tests: "true"
+    apis.apps.tanzu.vmware.com/register-api: 'true'
+spec:
+  source:
+    git:
+      url: https://git-workshops-w07-s017.main.emea.end2end.link/product-service.git
+      ref:
+        branch: main
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"
+  params:
+  - name: gitops_ssh_secret
+    value: git-https
+  - name: registry
+    value:
+      server: registry-workshops-w07-s017.main.emea.end2end.link
+      repository: workloads
+  - name: api_descriptor
+    value:
+      type: openapi
+      location:
+        path: /v3/api-docs
+      system: sc-architecture-system
+      owner: team-vmware-tanzu-se
+      description: An API to manage products within the Spring Cloud Architecture app.
+  serviceClaims:
+    - name: config-server
+      ref:
+        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+        kind: ResourceClaim
+        name: product-config-server-claim
+    - name: service-registry
+      ref:
+        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+        kind: ResourceClaim
+        name: eurekaserver-1
+    - name: tracing
+      ref:
+        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+        kind: ResourceClaim
+        name: zipkin-1
+    - name: auth-client
+      ref:
+        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+        kind: ResourceClaim
+        name: auth-client
+  env:
+    - name: SPRING_CONFIG_IMPORT
+      value: optional:configtree:${SERVICE_BINDING_ROOT}/config-server/
