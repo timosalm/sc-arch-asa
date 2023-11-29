@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        shipOrder-in-0.destination: ${shipping.in-queue}
+        shipOrder-out-0.destination: ${shipping.out-queue}
+      servicebus.queue.bindings:
+        shipOrder-in-0.consumer.checkpoint-mode: MANUAL
+        shipOrder-out-0.consumer.checkpoint-mode: MANUAL
+management:
+  endpoint.restart.enabled: true
+  endpoints.web.exposure.include: "*"
+  tracing.sampling.probability: 1.0
+  endpoint.env.show-values: ALWAYS
+shipping:
+  in-queue: order-shipping-queue
+  out-queue: order-delivered-queue
+  duration: 1000

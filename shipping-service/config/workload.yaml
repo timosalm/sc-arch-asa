@@ -1,0 +1,40 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: shipping-service
+  labels:
+    app.kubernetes.io/part-of: shipping-service
+    apps.tanzu.vmware.com/workload-type: worker
+spec:
+  source:
+    git:
+      url: https://git-workshops-w07-s017.main.emea.end2end.link/shipping-service.git
+      ref:
+        branch: main
+  params:
+  - name: gitops_ssh_secret
+    value: git-https
+  - name: registry
+    value:
+      server: registry-workshops-w07-s017.main.emea.end2end.link
+      repository: workloads
+  serviceClaims:
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ClassClaim
+      name: rmq-1
+  - name: config-server
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: shipping-config-server-claim
+  - name: tracing
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: zipkin-1
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"

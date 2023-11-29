@@ -1,0 +1,74 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: order-service
+  annotations:
+    autoscaling.knative.dev/min-scale: "1"
+  labels:
+    app.kubernetes.io/part-of: order-service
+    apps.tanzu.vmware.com/workload-type: web
+    apis.apps.tanzu.vmware.com/register-api: "true"
+spec:
+  source:
+    git:
+      url: https://git-workshops-w07-s017.main.emea.end2end.link/order-service.git
+      ref:
+        branch: main
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"
+  params:
+  - name: gitops_ssh_secret
+    value: git-https
+  - name: registry
+    value:
+      server: registry-workshops-w07-s017.main.emea.end2end.link
+      repository: workloads
+  - name: api_descriptor
+    value:
+      type: openapi
+      location:
+        path: "/v3/api-docs"
+      system: sc-architecture-system
+      owner: team-vmware-tanzu-se
+      description: "An API to manage orders within the Spring Cloud Architecture app."
+  serviceClaims:
+  - name: config-server
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: order-config-server-claim
+  - name: tracing
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: zipkin-1
+  - name: db
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ClassClaim
+      name: postgres-1
+  - name: rmq
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ClassClaim
+      name: rmq-1
+  - name: cache
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ClassClaim
+      name: redis-1
+  - name: service-registry
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: eurekaserver-1
+  - name: auth-client
+    ref:
+      apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+      kind: ResourceClaim
+      name: auth-client
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: oauth

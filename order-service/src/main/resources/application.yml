@@ -1,0 +1,26 @@
+spring:
+  jpa.hibernate.ddl-auto: update
+  cache.redis.time-to-live: 60000 # 1 min
+  jms.servicebus:
+    namespace: ${spring.cloud.azure.servicebus.namespace}
+    passwordless-enabled: true
+    pricing-tier: basic
+logging.level.org.springframework.cache: TRACE
+management:
+  tracing.sampling.probability: 1.0
+  endpoint:
+    restart.enabled: true
+    env.show-values: ALWAYS
+  endpoints.web.exposure.include: "*"
+  zipkin.tracing.endpoint:
+server:
+  error:
+    include-message: always
+order:
+  delivered-queue-name: order-delivered-queue
+  shipping-queue-name: order-shipping-queue
+  products-api-url:
+---
+spring:
+  config.activate.on-profile: oauth
+  security.oauth2.resourceserver.jwt.jwk-set-uri: '${spring.security.oauth2.client.provider.appsso.issuer-uri}/oauth2/jwks'
