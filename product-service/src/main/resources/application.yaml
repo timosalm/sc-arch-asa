@@ -1,8 +1,9 @@
-spring:
-  application.name: productservice # for config server
-  security.oauth2.resourceserver.jwt.jwk-set-uri: ${spring.security.oauth2.client.provider.appsso.issuer-uri}/oauth2/jwks
 management:
   endpoint.env.show-values: ALWAYS
   endpoints.web.exposure.include: "*"
   tracing.sampling.probability: 1
 product-service.product-names: VMware Tanzu Application Platform, VMware Spring Runtime
+---
+spring:
+  config.activate.on-profile: oauth
+  security.oauth2.resourceserver.jwt.jwk-set-uri: '${spring.security.oauth2.client.provider.appsso.issuer-uri}/oauth2/jwks'
