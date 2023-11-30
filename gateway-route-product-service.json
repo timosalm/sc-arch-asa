@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "title": "Product Service",
+      "predicates": [
+        "Path=/services/product-service/**"
+      ],
+      "filters": [
+        "StripPrefix=2"
+      ]
+    }
+   ]
+}

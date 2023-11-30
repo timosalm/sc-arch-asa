@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "title": "Order Service",
+      "predicates": [
+        "Path=/services/order-service/**"
+      ],
+      "filters": [
+        "StripPrefix=2"
+      ]
+    }
+   ]
+}
