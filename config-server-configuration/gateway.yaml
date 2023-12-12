@@ -6,8 +6,7 @@ spring.cloud.gateway:
     - Path=/frontend/**
     filters:
     - StripPrefix=1
-    - RemoveRequestHeader=Content-Type
-    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:authserver-1-sc-architecture.main.emea.end2end.link,CLIENT_ID_VALUE:sc-architecture_client-registration
+    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:https://github.com,CLIENT_ID_VALUE:7da358750162fbc18ec7
   globalcors.corsConfigurations:
     '[/**]':
       allowedOrigins:
