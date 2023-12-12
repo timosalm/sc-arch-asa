@@ -1,12 +1,12 @@
 spring.cloud.gateway:
   routes:
   - id: frontend
-      uri: http://frontend.sc-architecture
-      predicates:
-      - Path=/frontend/**
-      filters:
-      - StripPrefix=1
-      - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:authserver-1-sc-architecture.main.emea.end2end.link,CLIENT_ID_VALUE:sc-architecture_client-registration
+    uri: http://frontend.default
+    predicates:
+    - Path=/frontend/**
+    filters:
+    - StripPrefix=1
+    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:authserver-1-sc-architecture.main.emea.end2end.link,CLIENT_ID_VALUE:sc-architecture_client-registration
   globalcors.corsConfigurations:
     '[/**]':
       allowedOrigins:
