@@ -1,8 +1,7 @@
 management:
   endpoint.env.show-values: ALWAYS
   endpoints.web.exposure.include: "*"
-  tracing.sampling.probability: 1
-product-service.product-names: VMware Tanzu Application Platform, VMware Spring Runtime
+product-service.product-names: VMware Tanzu Application Platform
 ---
 spring:
   config.activate.on-profile: oauth

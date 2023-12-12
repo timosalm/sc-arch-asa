@@ -5,18 +5,20 @@ spring:
     namespace: ${spring.cloud.azure.servicebus.namespace}
     passwordless-enabled: true
     pricing-tier: basic
+    pool: # https://github.com/MicrosoftDocs/azure-dev-docs/blob/main/articles/java/spring-framework/spring-jms-troubleshooting-guide.md#the-messageproducer-was-closed-due-to-an-unrecoverable-error
+      enabled: true
+      max-connections: 5
 logging.level.org.springframework.cache: TRACE
 management:
-  tracing.sampling.probability: 1.0
   endpoint:
     restart.enabled: true
     env.show-values: ALWAYS
   endpoints.web.exposure.include: "*"
-  zipkin.tracing.endpoint:
 server:
   error:
     include-message: always
 order:
+  servicebus-fqn: servicebus.windows.net
   delivered-queue-name: order-delivered-queue
   shipping-queue-name: order-shipping-queue
   products-api-url:

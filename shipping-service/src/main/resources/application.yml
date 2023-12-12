@@ -4,15 +4,14 @@ spring:
       bindings:
         shipOrder-in-0.destination: ${shipping.in-queue}
         shipOrder-out-0.destination: ${shipping.out-queue}
-      servicebus.queue.bindings:
-        shipOrder-in-0.consumer.checkpoint-mode: MANUAL
-        shipOrder-out-0.consumer.checkpoint-mode: MANUAL
-management:
-  endpoint.restart.enabled: true
+      servicebus.bindings:
+        shipOrder-out-0.producer.entity-type: queue
+  endpoint:
+    restart.enabled: true
+    env.show-values: ALWAYS
   endpoints.web.exposure.include: "*"
-  tracing.sampling.probability: 1.0
-  endpoint.env.show-values: ALWAYS
 shipping:
+  servicebus-fqn: servicebus.windows.net
   in-queue: order-shipping-queue
   out-queue: order-delivered-queue
-  duration: 1000
+  duration: 10000

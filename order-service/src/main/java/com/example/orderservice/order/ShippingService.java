@@ -36,8 +36,7 @@ public class ShippingService {
         });
     }
 
-    @JmsListener(destination = "${order.delivered-queue-name}",
-            containerFactory = "jmsListenerContainerFactory")
+    @JmsListener(destination = "${order.delivered-queue-name}", containerFactory = "jmsListenerContainerFactory")
     private void updateStatus(OrderStatusUpdate statusUpdate) {
         log.info("updateStatus called for order id: " + statusUpdate.getId() + " with status "
                 + statusUpdate.getStatus());

@@ -1,6 +1,7 @@
 package com.example.shippingservice.shipping;
 
-class Order {
+public class Order {
+
     private Long id;
     private int productId;
     private String shippingAddress;

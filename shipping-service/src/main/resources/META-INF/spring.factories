@@ -1,2 +1,1 @@
-org.springframework.cloud.bindings.boot.BindingsPropertiesProcessor=\
-  com.example.shippingservice.ZipkinBindingsPropertiesProcessor
+org.springframework.boot.env.EnvironmentPostProcessor=com.example.shippingservice.FixServiceBusNamespaceEnvironmentPostProcessor

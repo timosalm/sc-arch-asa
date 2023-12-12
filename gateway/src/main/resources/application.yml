@@ -1,3 +1,2 @@
 spring:
-  application.name: sc-gateway # for config server and service-registry
   cloud.gateway.discovery.locator.enabled: true

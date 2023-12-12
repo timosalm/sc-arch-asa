@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
+		<version>3.2.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
@@ -15,8 +15,8 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
-		<spring-cloud.version>2022.0.4</spring-cloud.version>
-    <azure.version>5.7.0</azure.version>
+		<spring-cloud.version>2023.0.0</spring-cloud.version>
+    	<azure.version>5.7.0</azure.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -27,32 +27,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-config</artifactId>
-    </dependency>
-    
 		<dependency>
-      <groupId>com.azure.spring</groupId>
-      <artifactId>spring-cloud-azure-stream-binder-servicebus</artifactId>
-    </dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-context</artifactId>
-		</dependency>
-
-		<dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-tracing-bridge-otel</artifactId>
+		  <groupId>org.springframework.cloud</groupId>
+		  <artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.opentelemetry</groupId>
-			<artifactId>opentelemetry-exporter-zipkin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-bindings</artifactId>
-			<version>2.0.1</version>
+		  <groupId>com.azure.spring</groupId>
+		  <artifactId>spring-cloud-azure-stream-binder-servicebus</artifactId>
 		</dependency>
 
 		<dependency>
@@ -61,10 +42,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-stream-test-binder</artifactId>
-      <scope>test</scope>
-    </dependency>
+		  <groupId>org.springframework.cloud</groupId>
+		  <artifactId>spring-cloud-stream-test-binder</artifactId>
+		  <scope>test</scope>
+    	</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -75,13 +56,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-      <dependency>
-        <groupId>com.azure.spring</groupId>
-        <artifactId>spring-cloud-azure-dependencies</artifactId>
-        <version>${azure.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+			<dependency>
+				<groupId>com.azure.spring</groupId>
+				<artifactId>spring-cloud-azure-dependencies</artifactId>
+				<version>${azure.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -93,5 +74,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
