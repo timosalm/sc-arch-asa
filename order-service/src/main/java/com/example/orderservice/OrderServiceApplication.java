@@ -36,6 +36,7 @@ public class OrderServiceApplication {
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
         var listenerFactory = new DefaultJmsListenerContainerFactory();
         configurer.configure(listenerFactory, connectionFactory);
+        // Disable the support of transactions, as the JMS broker does not support transacted sessions
         listenerFactory.setTransactionManager(null);
         listenerFactory.setSessionTransacted(false);
         return listenerFactory;

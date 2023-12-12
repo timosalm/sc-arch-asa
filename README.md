@@ -21,6 +21,7 @@ az spring app create -s sc-arch -g sc-arch -n product-service
 az spring app create -s sc-arch -g sc-arch -n order-service
 az spring app create -s sc-arch -g sc-arch -n shipping-service
 az spring app create -s sc-arch -g sc-arch -n gateway
+az spring app create -s sc-arch -g sc-arch -n frontend --env PORT=1025
 ```
 #### Connect apps to services
 ```
@@ -41,6 +42,7 @@ az spring config-server git set -g sc-arch -n sc-arch --uri https://github.com/t
 (cd order-service && az spring app deploy -s sc-arch -g sc-arch -n order-service --runtime-version Java_17 --source-path)
 (cd shipping-service && az spring app deploy -s sc-arch -g sc-arch -n shipping-service --runtime-version Java_17 --source-path)
 (cd gateway && az spring app deploy -s sc-arch -g sc-arch -n gateway --runtime-version Java_17 --assign-endpoint --source-path)
+az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-workshops/frontend --container-registry harbor.main.emea.end2end.link
 ```
 
 ### Validate that 
