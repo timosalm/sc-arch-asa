@@ -1,5 +1,17 @@
 spring.cloud.gateway:
   routes:
+  - id: product-service
+    uri: lb://PRODUCT-SERVICE
+    predicates:
+    - Path=/services/product-service/**
+    filters:
+    - StripPrefix=2
+  - id: order-service
+    uri: lb://ORDER-SERVICE
+    predicates:
+    - Path=/services/order-service/**
+    filters:
+    - StripPrefix=2
   - id: frontend
     uri: http://frontend.default
     predicates:
