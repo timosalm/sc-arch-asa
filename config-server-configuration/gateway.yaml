@@ -6,7 +6,7 @@ spring.cloud.gateway:
     - Path=/frontend/**
     filters:
     - StripPrefix=1
-    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:github.com,CLIENT_ID_VALUE:7da358750162fbc18ec7
+    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1/v2.0,CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca
   globalcors.corsConfigurations:
     '[/**]':
       allowedOrigins:
