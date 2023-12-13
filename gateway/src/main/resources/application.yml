@@ -1,11 +1,20 @@
 spring:
-  cloud.gateway.discovery.locator:
-    enabled: true
-    lowerCaseServiceId: true
-    predicates: 
-    - Path="'/services/'+serviceId+'/**'"
-    filters:
-    - StripPrefix=2
+  cloud.gateway:
+    discovery.locator:
+      enabled: true
+      lowerCaseServiceId: true
+      predicates[0].name: Path
+      predicates[0].args[pattern]: "'/services/'+serviceId+'/**'"
+      filters[0].name: StripPrefix
+      filters[0].args[_genkey_0]: 2
+    globalcors.corsConfigurations:
+      '[/**]':
+        allowedOrigins:
+          - "*"
+        allowedMethods:
+          - "*"
+        allowedHeaders:
+          - "*"    
   codec.max-in-memory-size: -1 # Fix "Exceeded limit on max bytes to buffer" exception for RewriteResponseBodyGatewayFilterFactory
 management:
   endpoint:
