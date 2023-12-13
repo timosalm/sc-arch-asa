@@ -2,16 +2,15 @@ spring:
   cloud.gateway:
     discovery.locator:
       enabled: true
-      lowerCaseServiceId: true
       predicates:
-      - name: Path
-        args:
-          pattern: "'/services/'+serviceId+'/**'"
+        - name: Path
+          args:
+            pattern: "'/'+serviceId.toLowerCase()+'/**'"
       filters:
-      - name: RewritePath
-        args:
-          regexp: "'/services/' + serviceId + '/?(?<remaining>.*)'"
-          replacement: "'/${remaining}'"
+        - name: RewritePath
+          args:
+              regexp: "'/' + serviceId.toLowerCase() + '/(?<remaining>.*)'"
+              replacement: "'/${remaining}'"
     globalcors.corsConfigurations:
       '[/**]':
         allowedOrigins:
