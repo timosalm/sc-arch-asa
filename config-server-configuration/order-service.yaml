@@ -1,3 +1,5 @@
-spring:
-  security.oauth2.resourceserver.jwt.issuer-uri: https://login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1/v2.0
 order.products-api-url: http://PRODUCT-SERVICE/api/v1/products
+---
+spring:
+  config.activate.on-profile: oauth
+  security.oauth2.resourceserver.jwt.issuer-uri: https://login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1/v2.0
