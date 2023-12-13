@@ -1,3 +1,8 @@
 spring:
   cloud.gateway.discovery.locator.enabled: true
   codec.max-in-memory-size: -1 # Fix "Exceeded limit on max bytes to buffer" exception for RewriteResponseBodyGatewayFilterFactory
+management:
+  endpoint:
+    restart.enabled: true
+    env.show-values: ALWAYS
+  endpoints.web.exposure.include: "*"

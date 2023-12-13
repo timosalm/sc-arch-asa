@@ -45,7 +45,7 @@ az spring config-server git set -g sc-arch -n sc-arch --uri https://github.com/t
 az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-workshops/frontend --container-registry harbor.main.emea.end2end.link
 ```
 
-### Validate that 
+### Validate that the deployed application is working
 
 GATEWAY_URL=$(az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url)
 curl $GATEWAY_URL/PRODUCT-SERVICE/api/v1/products
