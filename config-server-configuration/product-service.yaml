@@ -1,1 +1,4 @@
+spring:
+  profiles.active: oauth
+  security.oauth2.resourceserver.jwt.issuer-uri: login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1
 product-service.product-names: VMware Tanzu Application Platform, VMware Spring Runtime, VMware Tanzu for Kubernetes Operations, VMware Tanzu Application Service, VMware Data Services, VMware Application Catalog

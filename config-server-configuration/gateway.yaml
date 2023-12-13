@@ -1,29 +1,32 @@
-spring.cloud.gateway:
-  routes:
-  - id: product-service
-    uri: lb://PRODUCT-SERVICE
-    predicates:
-    - Path=/services/product-service/**
-    filters:
-    - StripPrefix=2
-  - id: order-service
-    uri: lb://ORDER-SERVICE
-    predicates:
-    - Path=/services/order-service/**
-    filters:
-    - StripPrefix=2
-  - id: frontend
-    uri: http://frontend.default
-    predicates:
-    - Path=/frontend/**
-    filters:
-    - StripPrefix=1
-    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1,CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca,strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1
-  globalcors.corsConfigurations:
-    '[/**]':
-      allowedOrigins:
-        - "*"
-      allowedMethods:
-        - "*"
-      allowedHeaders:
-        - "*"    
+spring:
+  profiles.active: oauth
+  security.oauth2.resourceserver.jwt.issuer-uri: login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1
+  cloud.gateway:  
+    routes:
+    - id: product-service
+      uri: lb://PRODUCT-SERVICE
+      predicates:
+      - Path=/services/product-service/**
+      filters:
+      - StripPrefix=2
+    - id: order-service
+      uri: lb://ORDER-SERVICE
+      predicates:
+      - Path=/services/order-service/**
+      filters:
+      - StripPrefix=2
+    - id: frontend
+      uri: http://frontend.default
+      predicates:
+      - Path=/frontend/**
+      filters:
+      - StripPrefix=1
+      - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:${spring.security.oauth2.resourceserver.jwt.issuer-uri},CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca,strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1
+    globalcors.corsConfigurations:
+      '[/**]':
+        allowedOrigins:
+          - "*"
+        allowedMethods:
+          - "*"
+        allowedHeaders:
+          - "*"    

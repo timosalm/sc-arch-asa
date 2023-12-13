@@ -22,7 +22,3 @@ order:
   delivered-queue-name: order-delivered-queue
   shipping-queue-name: order-shipping-queue
   products-api-url:
----
-spring:
-  config.activate.on-profile: oauth
-  security.oauth2.resourceserver.jwt.jwk-set-uri: '${spring.security.oauth2.client.provider.appsso.issuer-uri}/oauth2/jwks'

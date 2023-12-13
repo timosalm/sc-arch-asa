@@ -2,7 +2,3 @@ management:
   endpoint.env.show-values: ALWAYS
   endpoints.web.exposure.include: "*"
 product-service.product-names: VMware Tanzu Application Platform
----
-spring:
-  config.activate.on-profile: oauth
-  security.oauth2.resourceserver.jwt.jwk-set-uri: '${spring.security.oauth2.client.provider.appsso.issuer-uri}/oauth2/jwks'
