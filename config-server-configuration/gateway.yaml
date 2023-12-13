@@ -5,7 +5,7 @@ gateway:
       scheme: https
     client-id: d833fd59-c991-44f9-bdcd-5423ac27b9ca
 spring:
-  security.oauth2.resourceserver.jwt.issuer-uri: ${gateway.oauth.issuer.scheme}://${gateway.oauth.issuer.host}
+  security.oauth2.resourceserver.jwt.issuer-uri: ${gateway.oauth.issuer.scheme}://${gateway.oauth.issuer.host}/oauth2/jwks
   cloud.gateway:  
     discovery.locator.enabled: false
     routes:
