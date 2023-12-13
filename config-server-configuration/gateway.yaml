@@ -1,5 +1,4 @@
 spring:
-  profiles.active: oauth
   security.oauth2.resourceserver.jwt.issuer-uri: login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1
   cloud.gateway:  
     discovery.locator.enabled: false
