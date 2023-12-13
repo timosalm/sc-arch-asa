@@ -1,5 +1,11 @@
+gateway:
+  oauth:
+    issuer:
+      host: login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1
+      scheme: https
+    client-id: d833fd59-c991-44f9-bdcd-5423ac27b9ca
 spring:
-  security.oauth2.resourceserver.jwt.issuer-uri: login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1
+  security.oauth2.resourceserver.jwt.issuer-uri: ${gateway.oauth.issuer.scheme}://${gateway.oauth.issuer.host}
   cloud.gateway:  
     discovery.locator.enabled: false
     routes:
@@ -21,7 +27,7 @@ spring:
       - Path=/frontend/**
       filters:
       - StripPrefix=1
-      - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:${spring.security.oauth2.resourceserver.jwt.issuer-uri},CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca,strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1,\+this.getAccessToken:\+this.getIdToken,this.oAuthService.getAccessToken:this.oAuthService.getIdToken
+      - RewriteResponseBody=ISSUER_SCHEME:{gateway.oauth.issuer.scheme},ISSUER_HOST:${gateway.oauth.issuer.host},CLIENT_ID_VALUE:${gateway.oauth.client-id},strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1,\+this.getAccessToken:\+this.getIdToken,this.oAuthService.getAccessToken:this.oAuthService.getIdToken
     globalcors.corsConfigurations:
       '[/**]':
         allowedOrigins:
