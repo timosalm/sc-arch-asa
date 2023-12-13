@@ -10,10 +10,10 @@ spring:
     discovery.locator:
       enabled: true
       lowerCaseServiceId: true
-      predicates: 
-      - Path="'/services/'+serviceId+'/**'"
-      filters:
-      - StripPrefix=2
+      predicates[0].name: Path
+      predicates[0].args[pattern]: "'/services/'+serviceId+'/**'"
+      filters[0].name: StripPrefix
+      filters[0].args[_genkey_0]: 2
     routes:
     - id: frontend
       uri: http://frontend.default
