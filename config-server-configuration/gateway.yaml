@@ -7,13 +7,6 @@ gateway:
 spring:
   security.oauth2.resourceserver.jwt.issuer-uri: ${gateway.oauth.issuer.scheme}://${gateway.oauth.issuer.host}
   cloud.gateway:  
-    discovery.locator:
-      enabled: true
-#      lowerCaseServiceId: true
-#      predicates[0].name: Path
-#      predicates[0].args[pattern]: "'/services/'+serviceId+'/**'"
-#      filters[0].name: StripPrefix
-#      filters[0].args[_genkey_0]: 2
     routes:
     - id: frontend
       uri: http://frontend.default
@@ -21,12 +14,4 @@ spring:
       - Path=/frontend/**
       filters:
       - StripPrefix=1
-      - RewriteResponseBody=ISSUER_SCHEME:${gateway.oauth.issuer.scheme},ISSUER_HOST:${gateway.oauth.issuer.host},CLIENT_ID_VALUE:${gateway.oauth.client-id},strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1,profile roles:profile,\+this.getAccessToken:\+this.getIdToken,this.oAuthService.getAccessToken:this.oAuthService.getIdToken
-    globalcors.corsConfigurations:
-      '[/**]':
-        allowedOrigins:
-          - "*"
-        allowedMethods:
-          - "*"
-        allowedHeaders:
-          - "*"    
+      - RewriteResponseBody=ISSUER_SCHEME:${gateway.oauth.issuer.scheme},ISSUER_HOST:${gateway.oauth.issuer.host},CLIENT_ID_VALUE:${gateway.oauth.client-id},strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1,profile roles:profile,\+this.getAccessToken:\+this.getIdToken,this.oAuthService.getAccessToken:this.oAuthService.getIdToken  
