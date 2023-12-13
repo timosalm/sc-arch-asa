@@ -17,7 +17,7 @@ az servicebus queue create -n order-delivered-queue -g sc-arch --namespace-name 
 
 #### Create apps
 ```
-az spring app create -s sc-arch -g sc-arch -n product-service
+az spring app create -s sc-arch -g sc-arch -n product-service --env 
 az spring app create -s sc-arch -g sc-arch -n order-service
 az spring app create -s sc-arch -g sc-arch -n shipping-service
 az spring app create -s sc-arch -g sc-arch -n gateway
@@ -47,10 +47,39 @@ az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-wor
 
 ### Validate that the deployed application is working
 
+```
 GATEWAY_URL=$(az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url)
 curl $GATEWAY_URL/PRODUCT-SERVICE/api/v1/products
 curl $GATEWAY_URL/ORDER-SERVICE/api/v1/orders
 curl -X POST -H "Content-Type: application/json" -d '{"productId":"1", "shippingAddress": "Stuttgart"}' $GATEWAY_URL/ORDER-SERVICE/api/v1/orders
+curl $GATEWAY_URL/ORDER-SERVICE/api/v1/orders
+```
+
+After a few seconds, the status of your created order should change to `DELIVERED`.
+
+### Secure your application 
+
+#### Create an App registration in Microsoft Entra
+Go to the [Microsoft Entra admin center](https://entra.microsoft.com/) or access the Microsoft Entra service from your [Azure portal](https://portal.azure.com/).
+
+Browse to `Identity > Applications > App registrations`, and click on `New registration`.
+- Fill out the Name (e.g. `asa-sc-arch`)
+- For the Redirect URI field, choose `Single Page Application (SPA)` as the platform. Run the following command to get the base URL for the Redirect URI `az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url`, and add `/frontend/index.html` to it (e.g. https://sc-arch-gateway.azuremicroservices.io/frontend/index.html).
+- Click on `Register`
+
+Note the `Application (client) ID` on your just created App registration's Overview dashboard.
+
+Go back to `Identity > Applications > App registrations`, and click on `Endpoints`. Note the `OpenID Connect metadata document` endpoint without the `/v2.0/.well-known/openid-configuration` suffix as the issuer host (.e.g https://login.microsoftonline.com/29242f74-371f-4db2-2a50-c62b6877a0c1).
+
+#### Update application configuration
+
+*TODO:* ADD info on how to set up config server config
+
+```
+az spring app update -s sc-arch -g sc-arch -n product-service --env SPRING_PROFILES_ACTIVE=oauth
+az spring app update -s sc-arch -g sc-arch -n order-service --env SPRING_PROFILES_ACTIVE=oauth
+az spring app update -s sc-arch -g sc-arch -n gateway --env SPRING_PROFILES_ACTIVE=oauth
+```
 
 ### Azure Spring Apps Enterprise
 
