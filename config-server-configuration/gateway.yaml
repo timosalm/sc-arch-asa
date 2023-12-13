@@ -21,7 +21,7 @@ spring:
       - Path=/frontend/**
       filters:
       - StripPrefix=1
-      - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:${spring.security.oauth2.resourceserver.jwt.issuer-uri},CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca,strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1,+this.getAccessToken:+this.getIdToken
+      - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:${spring.security.oauth2.resourceserver.jwt.issuer-uri},CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca,strictDiscoveryDocumentValidation=!0:strictDiscoveryDocumentValidation=0,skipIssuerCheck=!1:skipIssuerCheck=1,\+this.getAccessToken:\+this.getIdToken
     globalcors.corsConfigurations:
       '[/**]':
         allowedOrigins:
