@@ -6,7 +6,7 @@ spring.cloud.gateway:
     - Path=/frontend/**
     filters:
     - StripPrefix=1
-    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:login.microsoftonline.com/29248f74-371f-4db2-9a50-c62a6877a0c1,CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca
+    - RewriteResponseBody=ISSUER_SCHEME:https,ISSUER_HOST:sts.windows.net/29248f74-371f-4db2-9a50-c62a6877a0c1,CLIENT_ID_VALUE:d833fd59-c991-44f9-bdcd-5423ac27b9ca
   globalcors.corsConfigurations:
     '[/**]':
       allowedOrigins:
