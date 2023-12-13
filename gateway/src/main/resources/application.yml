@@ -1,5 +1,11 @@
 spring:
-  cloud.gateway.discovery.locator.enabled: true
+  cloud.gateway.discovery.locator:
+    enabled: true
+    lowerCaseServiceId: true
+    predicates: 
+    - Path="'/services/'+serviceId+'/**'"
+    filters:
+    - StripPrefix=2
   codec.max-in-memory-size: -1 # Fix "Exceeded limit on max bytes to buffer" exception for RewriteResponseBodyGatewayFilterFactory
 management:
   endpoint:

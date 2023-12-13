@@ -7,20 +7,14 @@ gateway:
 spring:
   security.oauth2.resourceserver.jwt.issuer-uri: ${gateway.oauth.issuer.scheme}://${gateway.oauth.issuer.host}
   cloud.gateway:  
-    discovery.locator.enabled: false
+    discovery.locator:
+      enabled: true
+      lowerCaseServiceId: true
+      predicates: 
+      - Path="'/services/'+serviceId+'/**'"
+      filters:
+      - StripPrefix=2
     routes:
-    - id: product-service
-      uri: http://product-service.default:8080
-      predicates:
-      - Path=/services/product-service/**
-      filters:
-      - StripPrefix=2
-    - id: order-service
-      uri: http://order-service.default:8080
-      predicates:
-      - Path=/services/order-service/**
-      filters:
-      - StripPrefix=2
     - id: frontend
       uri: http://frontend.default
       predicates:
