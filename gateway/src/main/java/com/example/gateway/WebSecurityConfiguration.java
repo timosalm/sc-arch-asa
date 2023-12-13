@@ -14,21 +14,22 @@ class WebSecurityConfiguration {
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
       return http
-        .csrf(csrf -> csrf.disable())
-        .authorizeExchange((exchanges) -> exchanges
-          .anyExchange().permitAll()
-        ).build();
+              .csrf(csrf -> csrf.disable())
+              .authorizeExchange((exchanges) -> exchanges
+                .anyExchange().permitAll()
+              ).build();
     }
 
     @Profile("oauth")
     @Bean
     public SecurityWebFilterChain oauthFilterChain(ServerHttpSecurity http) throws Exception {
-        return http
-        .authorizeExchange((exchanges) -> exchanges
-          .pathMatchers("/services/**").authenticated()
-          .pathMatchers("/**").permitAll()
-        )
-        .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-        .build();
+      return http
+              .csrf(csrf -> csrf.disable())
+              .authorizeExchange((exchanges) -> exchanges
+                .pathMatchers("/services/**").authenticated()
+                .pathMatchers("/**").permitAll()
+              )
+              .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+              .build();
     }
 }
