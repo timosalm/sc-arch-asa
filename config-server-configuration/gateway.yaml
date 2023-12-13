@@ -27,7 +27,7 @@ spring:
       - Path=/frontend/**
       filters:
       - StripPrefix=1
-      - RewriteResponseBody=ISSUER_SCHEME:${gateway.oauth.issuer.scheme},ISSUER_HOST:${gateway.oauth.issuer.host},CLIENT_ID_VALUE:${gateway.oauth.client-id}," roles":"",\+this.getAccessToken:\+this.getIdToken,this.oAuthService.getAccessToken:this.oAuthService.getIdToken
+      - RewriteResponseBody=ISSUER_SCHEME:${gateway.oauth.issuer.scheme},ISSUER_HOST:${gateway.oauth.issuer.host},CLIENT_ID_VALUE:${gateway.oauth.client-id},profile roles:profile,\+this.getAccessToken:\+this.getIdToken,this.oAuthService.getAccessToken:this.oAuthService.getIdToken
     globalcors.corsConfigurations:
       '[/**]':
         allowedOrigins:
