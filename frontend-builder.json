@@ -1,0 +1,22 @@
+{
+  "stack": {
+    "id": "io.buildpacks.stacks.jammy",
+    "version": "full"
+  },
+  "buildpackGroups": [
+    {
+      "name": "default",
+      "buildpacks": [
+        {
+          "id": "tanzu-buildpacks/python"
+        },
+        {
+          "id": "tanzu-buildpacks/web-servers"
+        },
+        {
+          "id": "tanzu-buildpacks/nodejs"
+        }
+      ]
+    }
+  ]
+}

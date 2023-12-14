@@ -7,7 +7,8 @@
         "Path=/frontend/**"
       ],
       "filters": [
-        "StripPrefix=1"
+        "StripPrefix=1",
+        "RewriteResponseBody=AUTH_ENABLED:AUTH_DISABLED"
       ]
     }
    ]

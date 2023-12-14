@@ -134,7 +134,14 @@ az spring service-registry bind -g sc-arch-e -s sc-arch-e --app shipping-service
 (cd product-service && az spring app deploy -s sc-arch-e -g sc-arch-e -n product-service --build-env BP_JVM_VERSION=17 --source-path)
 (cd order-service && az spring app deploy -s sc-arch-e -g sc-arch-e -n order-service --build-env BP_JVM_VERSION=17 --source-path)
 (cd shipping-service && az spring app deploy -s sc-arch-e -g sc-arch-e -n shipping-service --build-env BP_JVM_VERSION=17 --source-path)
-az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --container-image tap-workshops/frontend --container-registry harbor.main.emea.end2end.link
+az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --container-image tap-workshops/frontend-optional-auth --container-registry harbor.main.emea.end2end.link
+```
+
+If you would like to build a container for the frontend yourself, run the following commands. See https://github.com/pivotal-cf/tanzu-python/issues/396 for more information on why there is a need for a customer builder with different buildpack order.
+```
+az spring build-service builder create -s sc-arch-e -g sc-arch-e -n frontend --builder-file frontend-builder.json
+git clone https://github.com/timosalm/tap-spring-developer-workshop.git
+(cd tap-spring-developer-workshop/setup/frontend && az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --build-env BP_NODE_RUN_SCRIPTS=build --build-env BP_WEB_SERVER=nginx --build-env BP_WEB_SERVER_ROOT=dist/frontend --build-env BP_WEB_SERVER_ENABLE_PUSH_STATE="true" --source-path)
 ```
 
 #### Configure Spring Cloud Gateway
@@ -164,6 +171,11 @@ az spring api-portal show -s sc-arch-e -g sc-arch-e  | jq -r .properties.url
 az spring gateway update -s sc-arch-e -g sc-arch-e --server-url $GATEWAY_URL
 ```
 
+### Configure Dev Tool Portal
+```
+az spring dev-tool update -s sc-arch-e -g sc-arch-e --assign-endpoint true
+az spring dev-tool show -s sc-arch-e -g sc-arch-e  | jq -r .properties.url
+```
 ### Secure your application 
 
 #### Create an App registration in Microsoft Entra
