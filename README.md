@@ -158,9 +158,11 @@ curl $GATEWAY_URL/services/order-service/api/v1/orders
 After a few seconds, the status of your created order should change to `DELIVERED`.
 
 ### Configure API Portal
+```
 az spring api-portal update -s sc-arch-e -g sc-arch-e --assign-endpoint true
 az spring api-portal show -s sc-arch-e -g sc-arch-e  | jq -r .properties.url
 az spring gateway update -s sc-arch-e -g sc-arch-e --server-url $GATEWAY_URL
+```
 
 ### Secure your application 
 
@@ -179,5 +181,6 @@ Go back to `Identity > Applications > App registrations`, and click on `Endpoint
 *TODO* Add how to create client secret
 
 #### Update Spring Cloud Gateway configuration
-
+```
 az spring gateway update -s sc-arch-e -g sc-arch-e --issuer-uri <issuer> --scope "openid email profile" --client-id <client-id> --client-secret <client-secret>
+```
