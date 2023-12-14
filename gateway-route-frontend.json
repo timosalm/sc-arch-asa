@@ -1,0 +1,14 @@
+{
+  "routes": [
+    {
+      "title": "Frontend",
+      "uri": "http://frontend.default",
+      "predicates": [
+        "Path=/frontend/**"
+      ],
+      "filters": [
+        "StripPrefix=1"
+      ]
+    }
+   ]
+}
