@@ -137,14 +137,15 @@ az spring service-registry bind -g sc-arch-e -s sc-arch-e --app shipping-service
 az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --container-image tap-workshops/frontend-optional-auth --container-registry harbor.main.emea.end2end.link
 ```
 
-If you would like to build a container for the frontend yourself, run the following commands. See https://github.com/pivotal-cf/tanzu-python/issues/396 for more information on why there is a need for a customer builder with different buildpack order.
+If you would like to build a container for the frontend yourself, run the following commands. See https://github.com/pivotal-cf/tanzu-python/issues/396 for more information on why there is a need for a customer builder with different buildpack order. There is also a bug in the jammy base image, which leads to the following error at runtime ("/workspace/start.sh: 3: ng: not found"). We therefore use the bionic stack.
 ```
 az spring build-service builder create -s sc-arch-e -g sc-arch-e -n frontend --builder-file frontend-builder.json
 git clone https://github.com/timosalm/tap-spring-developer-workshop.git
-(cd tap-spring-developer-workshop/setup/frontend && az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --build-env BP_NODE_RUN_SCRIPTS=build --build-env BP_WEB_SERVER=nginx --build-env BP_WEB_SERVER_ROOT=dist/frontend --build-env BP_WEB_SERVER_ENABLE_PUSH_STATE="true" --source-path)
+(cd tap-spring-developer-workshop/setup/frontend && az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --build-env BP_NODE_RUN_SCRIPTS=build BP_WEB_SERVER_ROOT=dist BP_WEB_SERVER_ENABLE_PUSH_STATE=true BP_WEB_SERVER=nginx NODE_ENV=production --builder frontend --source-path)
 ```
 
 #### Configure Spring Cloud Gateway
+*TODO*: spring.codec.max-in-memory-size=-1
 ```
 az spring gateway update -s sc-arch-e -g sc-arch-e --assign-endpoint true --https-only true 
 az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n order-service --app-name order-service --routes-file gateway-route-order-service.json
