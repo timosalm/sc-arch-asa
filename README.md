@@ -50,7 +50,7 @@ az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-wor
 #### Via browser
 Open the output of the following command in your browser.
 ```
-echo "https://$(az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url)/frontend/"
+echo "$(az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url)/frontend/"
 ```
 #### Via curl
 ```

@@ -12,4 +12,4 @@ spring:
       - Path=/frontend/**
       filters:
       - StripPrefix=1
-      - RewriteResponseBody=enabled\:!1,issuer\:"",clientId\:"":enabled\:!0,issuer\:"${gateway.oauth.issuer}",clientId\:"${gateway.oauth.client-id}"  
+      - RewriteResponseBody="enabled:!1,issuer:\"\",clientId:\"\"":"enabled:1,issuer:\"${gateway.oauth.issuer}\",clientId:\"${gateway.oauth.client-id}\""  
