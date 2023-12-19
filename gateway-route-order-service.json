@@ -1,4 +1,6 @@
 {
+  "ssoEnabled": true,
+  "tokenRelay": true,
   "routes": [
     {
       "title": "Order Service",

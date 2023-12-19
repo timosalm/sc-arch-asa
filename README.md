@@ -15,7 +15,7 @@ az servicebus queue create -n order-shipping-queue -g sc-arch --namespace-name s
 az servicebus queue create -n order-delivered-queue -g sc-arch --namespace-name sc-arch-bus 
 ```
 
-#### Create apps
+#### Create app configuration
 ```
 az spring app create -s sc-arch -g sc-arch -n product-service --env 
 az spring app create -s sc-arch -g sc-arch -n order-service
@@ -96,7 +96,7 @@ az servicebus queue create -n order-shipping-queue -g sc-arch-e --namespace-name
 az servicebus queue create -n order-delivered-queue -g sc-arch-e --namespace-name sc-arch-e-bus 
 ```
 
-#### Create apps
+#### Create app configuration
 ```
 az spring app create -s sc-arch-e -g sc-arch-e -n product-service
 az spring app create -s sc-arch-e -g sc-arch-e -n order-service
@@ -137,11 +137,11 @@ az spring service-registry bind -g sc-arch-e -s sc-arch-e --app shipping-service
 az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --container-image tap-workshops/frontend-optional-auth --container-registry harbor.main.emea.end2end.link
 ```
 
-If you would like to build a container for the frontend yourself, run the following commands. See https://github.com/pivotal-cf/tanzu-python/issues/396 for more information on why there is a need for a customer builder with different buildpack order. There is also a bug in the jammy base image, which leads to the following error at runtime ("/workspace/start.sh: 3: ng: not found"). We therefore use the bionic stack.
+If you would like to build a container for the frontend yourself, run the following commands. Due to an issue with the current default builder, we create a custom one that only includes the `tanzu-buildpacks/web-servers`.
 ```
 az spring build-service builder create -s sc-arch-e -g sc-arch-e -n frontend --builder-file frontend-builder.json
 git clone https://github.com/timosalm/tap-spring-developer-workshop.git
-(cd tap-spring-developer-workshop/setup/frontend && az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --build-env BP_NODE_RUN_SCRIPTS=build BP_WEB_SERVER_ROOT=dist BP_WEB_SERVER_ENABLE_PUSH_STATE=true BP_WEB_SERVER=nginx NODE_ENV=production --builder frontend --source-path)
+(cd tap-spring-developer-workshop/setup/frontend && az spring app deploy -s sc-arch-e -g sc-arch-e -n frontend --build-env BP_NODE_RUN_SCRIPTS=build BP_WEB_SERVER_ROOT=dist/frontend BP_WEB_SERVER_ENABLE_PUSH_STATE=true BP_WEB_SERVER=nginx NODE_ENV=production --builder=frontend --source-path)
 ```
 
 #### Configure Spring Cloud Gateway
@@ -182,18 +182,19 @@ az spring dev-tool show -s sc-arch-e -g sc-arch-e  | jq -r .properties.url
 #### Create an App registration in Microsoft Entra
 Go to the [Microsoft Entra admin center](https://entra.microsoft.com/) or access the Microsoft Entra service from your [Azure portal](https://portal.azure.com/).
 
-Browse to `Identity > Applications > App registrations`, and click on `New registration`.
-- Fill out the Name (e.g. `asa-sc-arch-e`)
-- For the Redirect URI field, choose `Single Page Application (SPA)` as the platform. Run the following command to get the base URL for the Redirect URI `az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url`, and add `/frontend/index.html` to it (e.g. https://sc-arch-gateway.azuremicroservices.io/frontend/index.html).
-- Click on `Register`
+Follow the documentation [here](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-set-up-sso-with-azure-ad).
+
+Hint: For a working redirect URL, you have to add `/login/oauth2/code/sso` to the Gateway endpoint.
 
 Note the `Application (client) ID` on your just created App registration's Overview dashboard.
 
-Go back to `Identity > Applications > App registrations`, and click on `Endpoints`. Note the `OpenID Connect metadata document` endpoint without the `/.well-known/openid-configuration` suffix as the issuer host (.e.g https://login.microsoftonline.com/29242f74-371f-4db2-2a50-c62b6877a0c1/v2.0).
+Go back to `Identity > Applications > App registrations`, and click on `Endpoints`. Note the `OpenID Connect metadata document` endpoint without the `/.well-known/openid-configuration` suffix as the **issuer uri** (.e.g https://login.microsoftonline.com/29242f74-371f-4db2-2a50-c62b6877a0c1/v2.0).
 
-*TODO* Add how to create client secret
 
 #### Update Spring Cloud Gateway configuration
+
 ```
-az spring gateway update -s sc-arch-e -g sc-arch-e --issuer-uri <issuer> --scope "openid email profile" --client-id <client-id> --client-secret <client-secret>
+az spring gateway update -s sc-arch-e -g sc-arch-e --issuer-uri <issuer> --scope "openid,email,profile" --client-id <client-id> --client-secret <client-secret>
 ```
+
+// Set ssoEnabled: true

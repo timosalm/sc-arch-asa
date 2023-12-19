@@ -1,4 +1,5 @@
 {
+  "ssoEnabled": true,
   "routes": [
     {
       "title": "Frontend",
@@ -7,8 +8,7 @@
         "Path=/frontend/**"
       ],
       "filters": [
-        "StripPrefix=1",
-        "RewriteResponseBody=AUTH_ENABLED:AUTH_DISABLED"
+        "StripPrefix=1"
       ]
     }
    ]
