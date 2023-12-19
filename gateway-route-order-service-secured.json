@@ -1,7 +1,9 @@
 {
+  "ssoEnabled": true,
   "routes": [
     {
       "title": "Order Service",
+      "tokenRelay": true,
       "predicates": [
         "Path=/services/order-service/**"
       ],

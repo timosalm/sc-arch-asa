@@ -1,7 +1,9 @@
 {
+  "ssoEnabled": true,
   "routes": [
     {
       "title": "Product Service",
+      "tokenRelay": true,
       "predicates": [
         "Path=/services/product-service/**"
       ],

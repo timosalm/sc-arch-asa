@@ -2,14 +2,13 @@ package com.example.orderservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.AbstractOAuth2Token;
+import org.springframework.security.oauth2.server.resource.web.reactive.function.client.ServletBearerExchangeFilterFunction;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.security.config.Customizer;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 class WebSecurityConfiguration {
@@ -36,20 +35,12 @@ class WebSecurityConfiguration {
         .build();
     }
 
+    @LoadBalanced
     @Profile("oauth")
     @Primary
     @Bean
-    RestTemplate oauthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder.additionalInterceptors((request, body, execution) -> {
-            var authentication = SecurityContextHolder.getContext().getAuthentication();
-            log.info("Authentication in SecurityContextHolder: " + authentication);
-            if (authentication != null) {
-                var token = (AbstractOAuth2Token) authentication.getCredentials();
-                request.getHeaders().setBearerAuth(token.getTokenValue());
-                log.info("Adding authentication header to outgoing request");
-            }
-            return execution.execute(request, body);
-        }).build();
+    public WebClient.Builder oauthWebClientBuilder() {
+        return WebClient.builder().filter(new ServletBearerExchangeFilterFunction());
     }
 }
 

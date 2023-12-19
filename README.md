@@ -42,11 +42,17 @@ az spring config-server git set -g sc-arch -n sc-arch --uri https://github.com/t
 (cd order-service && az spring app deploy -s sc-arch -g sc-arch -n order-service --runtime-version Java_17 --source-path)
 (cd shipping-service && az spring app deploy -s sc-arch -g sc-arch -n shipping-service --runtime-version Java_17 --source-path)
 (cd gateway && az spring app deploy -s sc-arch -g sc-arch -n gateway --runtime-version Java_17 --assign-endpoint --source-path)
-az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-workshops/frontend --container-registry harbor.main.emea.end2end.link
+az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-workshops/frontend-optional-auth --container-registry harbor.main.emea.end2end.link
 ```
 
 ### Validate that the deployed application is working
 
+#### Via browser
+Open the output of the following command in your browser.
+```
+echo "https://$(az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url)/frontend/"
+```
+#### Via curl
 ```
 GATEWAY_URL=$(az spring app show -s sc-arch -g sc-arch -n gateway | jq -r .properties.url)
 curl $GATEWAY_URL/services/product-service/api/v1/products
@@ -71,14 +77,23 @@ Note the `Application (client) ID` on your just created App registration's Overv
 
 Go back to `Identity > Applications > App registrations`, and click on `Endpoints`. Note the `OpenID Connect metadata document` endpoint without the `/.well-known/openid-configuration` suffix as the issuer host (.e.g https://login.microsoftonline.com/29242f74-371f-4db2-2a50-c62b6877a0c1/v2.0).
 
+```
+export ISSUER_URI=
+export CLIENT_ID=
+```
+
 #### Update application configuration
 
-*TODO:* ADD info on how to set up config server config repo
-
 ```
-# az spring app update -s sc-arch -g sc-arch -n product-service --env SPRING_PROFILES_ACTIVE=oauth
-# az spring app update -s sc-arch -g sc-arch -n order-service --env SPRING_PROFILES_ACTIVE=oauth
-az spring app update -s sc-arch -g sc-arch -n gateway --env SPRING_PROFILES_ACTIVE=oauth
+az spring app update -s sc-arch -g sc-arch -n product-service --env SPRING_PROFILES_ACTIVE=oauth SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=$ISSUER_URI
+az spring app update -s sc-arch -g sc-arch -n order-service --env SPRING_PROFILES_ACTIVE=oauth SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=$ISSUER_URI
+az spring app update -s sc-arch -g sc-arch -n gateway --env SPRING_PROFILES_ACTIVE=oauth GATEWAY_OAUTH_ISSUER=$ISSUER_URI GATEWAY_OAUTH_CLIENT-ID=$CLIENT_ID
+```
+
+#### Validate that the deployed application is working
+Open the output of the following command in your browser.
+```
+echo "https://$(az spring gateway show -s sc-arch-e -g sc-arch-e | jq -r .properties.url)/frontend/"
 ```
 
 ## Azure Spring Apps Enterprise
@@ -145,9 +160,8 @@ git clone https://github.com/timosalm/tap-spring-developer-workshop.git
 ```
 
 #### Configure Spring Cloud Gateway
-*TODO*: spring.codec.max-in-memory-size=-1
 ```
-az spring gateway update -s sc-arch-e -g sc-arch-e --assign-endpoint true --https-only true 
+az spring gateway update -s sc-arch-e -g sc-arch-e --assign-endpoint true --https-only true --properties spring.codec.max-in-memory-size=-1
 az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n order-service --app-name order-service --routes-file gateway-route-order-service.json
 az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n product-service --app-name product-service --routes-file gateway-route-product-service.json
 az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n frontend --app-name frontend --routes-file gateway-route-frontend.json
@@ -155,6 +169,12 @@ az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n frontend --ap
 
 ### Validate that the deployed application is working
 
+#### Via browser
+Open the output of the following command in your browser.
+```
+echo "https://$(az spring gateway show -s sc-arch-e -g sc-arch-e | jq -r .properties.url)/frontend/"
+```
+#### Via curl
 ```
 GATEWAY_URL=https://$(az spring gateway show -s sc-arch-e -g sc-arch-e | jq -r .properties.url)
 curl $GATEWAY_URL/services/product-service/api/v1/products
@@ -190,11 +210,28 @@ Note the `Application (client) ID` on your just created App registration's Overv
 
 Go back to `Identity > Applications > App registrations`, and click on `Endpoints`. Note the `OpenID Connect metadata document` endpoint without the `/.well-known/openid-configuration` suffix as the **issuer uri** (.e.g https://login.microsoftonline.com/29242f74-371f-4db2-2a50-c62b6877a0c1/v2.0).
 
+```
+export ISSUER_URI=
+export CLIENT_ID=
+export CLIENT_SECRET=
+```
 
 #### Update Spring Cloud Gateway configuration
 
 ```
-az spring gateway update -s sc-arch-e -g sc-arch-e --issuer-uri <issuer> --scope "openid,email,profile" --client-id <client-id> --client-secret <client-secret>
+az spring gateway update -s sc-arch-e -g sc-arch-e --issuer-uri $ISSUER_URI --scope "openid,email,profile" --client-id $CLIENT_ID --client-secret $CLIENT_SECRET
+az spring gateway route-config update -s sc-arch-e -g sc-arch-e -n product-service --app-name product-service --routes-file gateway-route-product-service-secured.json
+az spring gateway route-config update -s sc-arch-e -g sc-arch-e -n order-service --app-name order-service --routes-file gateway-route-order-service-secured.json
 ```
 
-// Set ssoEnabled: true
+#### Update application configuration
+```
+az spring app update -s sc-arch-e -g sc-arch-e -n product-service --env SPRING_PROFILES_ACTIVE=oauth SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=$ISSUER_URI
+az spring app update -s sc-arch-e -g sc-arch-e -n order-service --env SPRING_PROFILES_ACTIVE=oauth SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=$ISSUER_URI
+```
+
+#### Validate that the deployed application is working
+Open the output of the following command in your browser.
+```
+echo "https://$(az spring gateway show -s sc-arch-e -g sc-arch-e | jq -r .properties.url)/frontend/"
+```
