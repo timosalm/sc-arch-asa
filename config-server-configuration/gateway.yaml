@@ -1,6 +1,0 @@
-gateway:
-  oauth:
-    issuer: 
-    client-id: 
-spring:
-  security.oauth2.resourceserver.jwt.issuer-uri: ${gateway.oauth.issuer}
