@@ -12,6 +12,14 @@ spring:
         args:
           regexp: "'/services/' + serviceId + '/?(?<remaining>.*)'"
           replacement: "'/${remaining}'"
+      - name: TokenRelay
+    routes:
+    - id: frontend
+      uri: http://frontend.default
+      predicates:
+      - Path=/frontend/**
+      filters:
+      - StripPrefix=1
     globalcors.corsConfigurations:
       '[/**]':
         allowedOrigins:
@@ -19,10 +27,25 @@ spring:
         allowedMethods:
           - "*"
         allowedHeaders:
-          - "*"    
-  codec.max-in-memory-size: -1 # Fix "Exceeded limit on max bytes to buffer" exception for RewriteResponseBodyGatewayFilterFactory
+          - "*"
+  security.oauth2.client:
+    registration:
+      sso:
+        provider: sso
+        client-id: ${gateway.oauth.client-id}
+        client-secret: ${gateway.oauth.client-secret}
+        authorization-grant-type: authorization_code
+        scope: openid,email,profile
+    provider:
+      sso:
+        issuer-uri: ${gateway.oauth.issuer-uri}
 management:
   endpoint:
     restart.enabled: true
-    env.show-values: ALWAYS
+    env.show-values: WHEN_AUTHORIZED
   endpoints.web.exposure.include: "*"
+gateway.sso:
+  client-id:
+  client-secret:
+  issuer-uri:
+
