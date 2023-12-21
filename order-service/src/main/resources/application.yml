@@ -8,11 +8,16 @@ spring:
     pool: # https://github.com/MicrosoftDocs/azure-dev-docs/blob/main/articles/java/spring-framework/spring-jms-troubleshooting-guide.md#the-messageproducer-was-closed-due-to-an-unrecoverable-error
       enabled: true
       max-connections: 5
+  data.redis:
+    host: ${spring.redis.host}
+    port: ${spring.redis.port}
+    password: ${spring.redis.password}
+    ssl.enabled: ${spring.redis.ssl}
 logging.level.org.springframework.cache: TRACE
 management:
   endpoint:
     restart.enabled: true
-    env.show-values: ALWAYS
+    env.show-values: WHEN_AUTHORIZED
   endpoints.web.exposure.include: "*"
 server:
   error:

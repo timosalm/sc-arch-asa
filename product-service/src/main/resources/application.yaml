@@ -1,4 +1,4 @@
 management:
-  endpoint.env.show-values: ALWAYS
+  endpoint.env.show-values: WHEN_AUTHORIZED
   endpoints.web.exposure.include: "*"
 product-service.product-names: VMware Tanzu Application Platform
