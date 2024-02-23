@@ -28,6 +28,14 @@ spring:
           - "*"
         allowedHeaders:
           - "*"
+management:
+  endpoint:
+    restart.enabled: true
+    env.show-values: WHEN_AUTHORIZED
+  endpoints.web.exposure.include: "*"
+---
+spring:
+  config.activate.on-profile: oauth
   security.oauth2.client:
     registration:
       sso:
@@ -39,13 +47,7 @@ spring:
     provider:
       sso:
         issuer-uri: ${gateway.oauth.issuer-uri}
-management:
-  endpoint:
-    restart.enabled: true
-    env.show-values: WHEN_AUTHORIZED
-  endpoints.web.exposure.include: "*"
 gateway.sso:
   client-id:
   client-secret:
   issuer-uri:
-

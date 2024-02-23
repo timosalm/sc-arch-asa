@@ -19,6 +19,12 @@ After the order is created and stored in the database, information like the ship
 
 ### Deployment
 
+#### Create ASA instance
+```
+az group create -n sc-arch --location germanywestcentral
+az spring create -n sc-arch -g sc-arch
+```
+
 #### Create backing service instances
 ```
 POSTGRES_PW=<your-postgres-password>
@@ -32,16 +38,16 @@ az servicebus queue create -n order-delivered-queue -g sc-arch --namespace-name 
 
 #### Create application configuration
 ```
-az spring app create -s sc-arch -g sc-arch -n product-service --env 
+az spring app create -s sc-arch -g sc-arch -n product-service
 az spring app create -s sc-arch -g sc-arch -n order-service
 az spring app create -s sc-arch -g sc-arch -n shipping-service
-az spring app create -s sc-arch -g sc-arch -n gateway
+az spring app create -s sc-arch -g sc-arch -n gateway --assign-public-endpoint
 az spring app create -s sc-arch -g sc-arch -n frontend --env PORT=1025
 ```
 #### Connect application to backing services
 ```
 az spring connection create redis -g sc-arch --tg sc-arch --service sc-arch --app order-service --server sc-arch-cache --database 0 --client-type springBoot --deployment default
-az spring connection create postgres -g sc-arch --tg sc-arch --service sc-arch --app order-service --server sc-arch-e-postgres-server --database order-db --client-type springBoot --secret name=developer secret=$POSTGRES_PW --deployment default
+az spring connection create postgres -g sc-arch --tg sc-arch --service sc-arch --app order-service --server sc-arch-postgres-server --database order-db --client-type springBoot --secret name=developer secret=$POSTGRES_PW --deployment default
 az spring connection create servicebus -g sc-arch --tg sc-arch --service sc-arch --app order-service --namespace sc-arch-bus --client-type springBoot --deployment default
 az spring connection create servicebus -g sc-arch --tg sc-arch --service sc-arch --app shipping-service --namespace sc-arch-bus --client-type springBoot --deployment default
 ```
@@ -56,7 +62,7 @@ az spring config-server git set -g sc-arch -n sc-arch --uri https://github.com/t
 (cd product-service && az spring app deploy -s sc-arch -g sc-arch -n product-service --runtime-version Java_17 --source-path)
 (cd order-service && az spring app deploy -s sc-arch -g sc-arch -n order-service --runtime-version Java_17 --source-path)
 (cd shipping-service && az spring app deploy -s sc-arch -g sc-arch -n shipping-service --runtime-version Java_17 --source-path)
-(cd gateway && az spring app deploy -s sc-arch -g sc-arch -n gateway --runtime-version Java_17 --assign-endpoint --source-path)
+(cd gateway && az spring app deploy -s sc-arch -g sc-arch -n gateway --runtime-version Java_17  --source-path)
 az spring app deploy -s sc-arch -g sc-arch -n frontend --container-image tap-workshops/frontend-optional-auth --container-registry harbor.main.emea.end2end.link
 ```
 
@@ -125,6 +131,12 @@ echo "https://$(az spring gateway show -s sc-arch -g sc-arch | jq -r .properties
 
 ### Deployment
 
+#### Create ASA instance
+```
+az group create -n sc-arch-e --location germanywestcentral
+az spring create -n sc-arch-e -g sc-arch-e --sku Enterprise
+```
+
 #### Create backing service instances
 ```
 POSTGRES_PW=<your-postgres-password>
@@ -153,6 +165,7 @@ az spring connection create servicebus -g sc-arch-e --tg sc-arch-e --service sc-
 
 #### Configure Application Configuration Service
 ```
+az spring application-configuration-service create -g sc-arch-e -s sc-arch-e --generation Gen2
 az spring application-configuration-service git repo add -g sc-arch-e -s sc-arch-e -n default --uri https://github.com/timosalm/sc-arch-asa.git --search-paths config-server-configuration --label main --patterns product-service,order-service,shipping-service
 az spring application-configuration-service bind -g sc-arch-e -s sc-arch-e --app product-service
 az spring application-configuration-service bind -g sc-arch-e -s sc-arch-e --app order-service
@@ -164,6 +177,7 @@ az spring app update -s sc-arch-e -g sc-arch-e -n shipping-service --config-file
 
 #### Bind application to Service Registry
 ```
+az spring service-registry create -g sc-arch-e -s sc-arch-e
 az spring service-registry bind -g sc-arch-e -s sc-arch-e --app product-service
 az spring service-registry bind -g sc-arch-e -s sc-arch-e --app order-service
 az spring service-registry bind -g sc-arch-e -s sc-arch-e --app shipping-service
@@ -185,6 +199,7 @@ az spring build-service builder create -s sc-arch-e -g sc-arch-e -n frontend --b
 
 #### Configure Spring Cloud Gateway
 ```
+az spring gateway create -s sc-arch-e -g sc-arch-e
 az spring gateway update -s sc-arch-e -g sc-arch-e --assign-endpoint true --https-only true --properties spring.codec.max-in-memory-size=-1
 az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n order-service --app-name order-service --routes-file gateway-route-order-service.json
 az spring gateway route-config create -s sc-arch-e -g sc-arch-e -n product-service --app-name product-service --routes-file gateway-route-product-service.json
@@ -211,14 +226,15 @@ After a few seconds, the status of your created order should change to `DELIVERE
 
 ### Configure API Portal
 ```
-az spring api-portal update -s sc-arch-e -g sc-arch-e --assign-endpoint true
+az spring api-portal create -s sc-arch-e -g sc-arch-e
+az spring api-portal update -s sc-arch-e -g sc-arch-e --assign-endpoint
 az spring api-portal show -s sc-arch-e -g sc-arch-e  | jq -r .properties.url
 az spring gateway update -s sc-arch-e -g sc-arch-e --server-url $GATEWAY_URL
 ```
 
 ### Configure Dev Tool Portal
 ```
-az spring dev-tool update -s sc-arch-e -g sc-arch-e --assign-endpoint true
+az spring dev-tool create -s sc-arch-e -g sc-arch-e --assign-endpoint true
 az spring dev-tool show -s sc-arch-e -g sc-arch-e  | jq -r .properties.url
 ```
 ### Secure your application 
@@ -246,6 +262,7 @@ export CLIENT_SECRET=
 az spring gateway update -s sc-arch-e -g sc-arch-e --issuer-uri $ISSUER_URI --scope "openid,email,profile" --client-id $CLIENT_ID --client-secret $CLIENT_SECRET
 az spring gateway route-config update -s sc-arch-e -g sc-arch-e -n product-service --app-name product-service --routes-file gateway-route-product-service-secured.json
 az spring gateway route-config update -s sc-arch-e -g sc-arch-e -n order-service --app-name order-service --routes-file gateway-route-order-service-secured.json
+az spring gateway route-config update -s sc-arch-e -g sc-arch-e -n frontend --app-name frontend --routes-file gateway-route-frontend-secured.json
 ```
 
 #### Update application configuration
